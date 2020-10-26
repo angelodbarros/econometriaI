@@ -1,0 +1,69 @@
+---
+title: "trabalho_econometria_I"
+author: "Ângelo"
+date: "25/10/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r, echo=FALSE, include=FALSE}
+library(tidyverse)
+library(scales)
+library(readr) # Pacote para leitura de arquivo CSV
+SUP_IES_2019 <- read_delim("C:/Users/angel/Downloads/microdados_educacao_superior_2019/Microdados_Educação_Superior_2019/dados/SUP_IES_2019.CSV", 
+    "|", escape_double = FALSE, trim_ws = TRUE) # Leitura do arquivo (endereço do meu computador, necessária mudança)
+SUP_IES_2019 <- SUP_IES_2019 %>% 
+  mutate(VL_DESPESA_TOTAL = VL_DESPESA_PESSOAL_DOCENTE + VL_DESPESA_PESSOAL_TECNICO + VL_DESPESA_PESSOAL_ENCARGO + VL_DESPESA_CUSTEIO + VL_DESPESA_INVESTIMENTO + VL_DESPESA_PESQUISA + VL_DESPESA_OUTRA,
+         VL_RECEITA_TOTAL = VL_RECEITA_PROPRIA + VL_RECEITA_TRANSFERENCIA + VL_RECEITA_OUTRA)
+```
+
+```{r,echo=FALSE, include=FALSE}
+library(broom) # pacote
+library(gmodels) # pacote
+```
+
+
+## REGRESSÃO SIMPLES
+
+* Estatísticas de Teste e Intervalos de Confiança
+```{r, echo=FALSE}
+rs <- lm(VL_DESPESA_TOTAL ~ VL_RECEITA_TOTAL, data = SUP_IES_2019) # função de regressão
+summary(rs)
+ci(rs)
+```
+
+
+```{r,echo=FALSE}
+rs_augmented <- rs %>% 
+  augment()
+ggplot(rs_augmented, aes(VL_RECEITA_TOTAL, VL_DESPESA_TOTAL)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm") +
+  scale_x_log10(labels = label_number()) +
+  scale_y_log10(labels = label_number()) +
+  labs(x = "Receita Total",
+       y = "Despesa Total") 
+
+```
+* Analisando os resíduos da regressão simples
+```{r}
+ggplot(rs_augmented, aes(.fitted, .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0)
+ggplot(rs_augmented, aes(.fitted, .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0)
+
+```
+* Testando a hipótese de 
+```{r}
+bptest(rs)
+```
+
