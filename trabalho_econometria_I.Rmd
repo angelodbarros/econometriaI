@@ -50,7 +50,9 @@ ggplot(rs_augmented, aes(VL_RECEITA_TOTAL, VL_DESPESA_TOTAL)) +
   scale_x_log10(labels = label_number()) +
   scale_y_log10(labels = label_number()) +
   labs(x = "Receita Total",
-       y = "Despesa Total") 
+       y = "Despesa Total",
+       title = "Despesa em Função da Receita\nde Universidades Brasileiras",
+       caption = "Fonte: INEP") 
 
 ```
 
@@ -58,11 +60,22 @@ ggplot(rs_augmented, aes(VL_RECEITA_TOTAL, VL_DESPESA_TOTAL)) +
 ```{r, echo=FALSE}
 ggplot(rs_augmented, aes(.fitted, .resid)) +
   geom_point() +
-  geom_hline(yintercept = 0, color = "red")
+  geom_hline(yintercept = 0, color = "red") +
+  labs(y = "Resíduos",
+       x = "Valores Ajustados da Despesa Total")
 ```
 
 ## Testando a hipótese de heterocedasticidade dos resíduos da regressão simples:
 ```{r,echo=FALSE}
 bptest(rs)
+```
+
+## Corrigindo os erros padrão através da matriz robusta de White
+```{r, echo=FALSE}
+# o pacote lmtest será usado através de sua função coeftest para resolver a questão da heterocedasticidade
+# além disso, o pacote Sandwich será usado para obtenção da matriz de variância-covariância
+# lm test foi carregado em chunks anteriores
+library(sandwich)
+coeftest(rs, vcov = vcovHC(rs, type = "HC0"))
 ```
 
