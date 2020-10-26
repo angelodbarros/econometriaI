@@ -1,6 +1,6 @@
 ---
 title: "trabalho_econometria_I"
-author: "Ângelo"
+author: "Grupo do Trabalho"
 date: "25/10/2020"
 output: html_document
 editor_options: 
@@ -27,12 +27,13 @@ SUP_IES_2019 <- SUP_IES_2019 %>%
 ```{r,echo=FALSE, include=FALSE}
 library(broom) # pacote
 library(gmodels) # pacote
+library(lmtest) # pacote
 ```
 
 
-## REGRESSÃO SIMPLES
+# REGRESSÃO SIMPLES
 
-* Estatísticas de Teste e Intervalos de Confiança
+## Estatísticas de Teste e Intervalos de Confiança
 ```{r, echo=FALSE}
 rs <- lm(VL_DESPESA_TOTAL ~ VL_RECEITA_TOTAL, data = SUP_IES_2019) # função de regressão
 summary(rs)
@@ -52,18 +53,16 @@ ggplot(rs_augmented, aes(VL_RECEITA_TOTAL, VL_DESPESA_TOTAL)) +
        y = "Despesa Total") 
 
 ```
-* Analisando os resíduos da regressão simples
-```{r}
-ggplot(rs_augmented, aes(.fitted, .resid)) +
-  geom_point() +
-  geom_hline(yintercept = 0)
-ggplot(rs_augmented, aes(.fitted, .resid)) +
-  geom_point() +
-  geom_hline(yintercept = 0)
 
+## Analisando os resíduos da regressão simples:
+```{r, echo=FALSE}
+ggplot(rs_augmented, aes(.fitted, .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, color = "red")
 ```
-* Testando a hipótese de 
-```{r}
+
+## Testando a hipótese de heterocedasticidade dos resíduos da regressão simples:
+```{r,echo=FALSE}
 bptest(rs)
 ```
 
