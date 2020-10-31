@@ -86,7 +86,7 @@ coeftest(rs, vcov = vcovHC(rs, type = "HC0"))
 
 ##  Estatísticas de Teste e Intervalos de Confiança
 ```{r, echo=FALSE}
-rm <- lm(VL_DESPESA_TOTAL ~ VL_RECEITA_TOTAL + QT_LIVRO_ELETRONICO + factor(CO_REGIAO) + factor(TP_CATEGORIA_ADMINISTRATIVA) + IN_CAPITAL, data = SUP_IES_2019)
+rm <- lm(VL_DESPESA_TOTAL ~ VL_RECEITA_TOTAL + QT_LIVRO_ELETRONICO + factor(CO_REGIAO) + factor(TP_CATEGORIA_ADMINISTRATIVA) + factor(IN_CAPITAL), data = SUP_IES_2019)
 summary(rm)
 ci(rm)
 ```
