@@ -58,6 +58,8 @@ ggplot(rs_augmented, aes(VL_RECEITA_TOTAL, VL_DESPESA_TOTAL)) +
 
 ## Analisando os resíduos da regressão simples:
 ```{r, echo=FALSE}
+rs_augmented <- rs %>% 
+  augment()
 ggplot(rs_augmented, aes(.fitted, .resid)) +
   geom_point() +
   geom_hline(yintercept = 0, color = "red") +
@@ -77,5 +79,37 @@ bptest(rs)
 # lm test foi carregado em chunks anteriores
 library(sandwich)
 coeftest(rs, vcov = vcovHC(rs, type = "HC0"))
+```
+
+
+# REGRESSÃO MÚLTIPLA
+
+##  Estatísticas de Teste e Intervalos de Confiança
+```{r, echo=FALSE}
+rm <- lm(VL_DESPESA_TOTAL ~ VL_RECEITA_TOTAL + QT_LIVRO_ELETRONICO + factor(CO_REGIAO) + factor(TP_CATEGORIA_ADMINISTRATIVA) + IN_CAPITAL, data = SUP_IES_2019)
+summary(rm)
+ci(rm)
+```
+
+
+## Analisando os resíduos da regressão múltipla:
+```{r, echo=FALSE}
+rm_augmented <- rm %>% 
+  augment()
+ggplot(rm_augmented, aes(.fitted, .resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, color = "red") +
+  labs(y = "Resíduos",
+       x = "Valores Ajustados da Despesa Total")
+```
+
+## Testando a hipótese de heterocedasticidade dos resíduos da regressão múltipla:
+```{r,echo=FALSE}
+bptest(rm)
+```
+
+## Testando hipóteses a respeito da qualidade dos modelos de regressão simples e múltipla usando a razão da verossimilhança (RV)
+```{r, echo=FALSE}
+lrtest(rs, rm)
 ```
 
